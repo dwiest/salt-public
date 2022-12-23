@@ -8,9 +8,3 @@ ec2:
       user   : ec2-user
       group  : ec2-user
       mode   : 0640
-    - name   : /home/ec2-user/requirements.txt
-      source : salt://python/requirements.txt?saltenv=aws-root
-      user   : ec2-user
-      group  : ec2-user
-      mode   : 0640
-
