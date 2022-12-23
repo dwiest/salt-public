@@ -1,0 +1,61 @@
+{% set jenkins = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'data_dir': {
+        'name'  : '/var/lib/jenkins',
+        'user'  : 'jenkins',
+        'group' : 'jenkins',
+        'mode'  : '0755'
+      },
+      'jobs': {
+        'home': {
+          'name'  : '/var/lib/jenkins/jobs',
+          'user'  : 'jenkins',
+          'group' : 'jenkins',
+          'mode'  : 0644,
+        },
+        'ami_build': {
+          'name': 'ami_build',
+          'source': 'salt://jenkins/jobs/ami_build/config.xml',
+        },
+        'django_collectstatic': {
+          'name': 'django_collectstatic',
+          'source': 'salt://jenkins/jobs/django_collectstatic/config.xml',
+        },
+        'salt_highstate': {
+          'name': 'salt_highstate',
+          'source': 'salt://jenkins/jobs/salt_highstate/config.xml',
+        },
+        'salt_state': {
+          'name': 'salt_state',
+          'source': 'salt://jenkins/jobs/salt_state/config.xml',
+        },
+        'salt_orchestration': {
+          'name': 'salt_orchestration',
+          'source': 'salt://jenkins/jobs/salt_orchestration/config.xml',
+        }
+      },
+      'pkg': {
+        'name': 'jenkins',
+        'repo': {
+          'name'      : 'jenkins',
+          'humanname' : 'Jenkins-stable',
+          'baseurl'   : 'http://pkg.jenkins.io/redhat-stable',
+          'gpgkey'    : 'https://pkg.jenkins.io/redhat/jenkins.io.key',
+          'gpgcheck'  : 1
+        }
+      },
+      'service': {
+        'name'   : 'jenkins',
+        'enable' : True
+      },
+      'sysconfig': {
+        'name'   : '/etc/sysconfig/jenkins',
+        'user'   : 'root',
+        'group'  : 'root',
+        'mode'   : '0600'
+      }
+    }
+  }, merge=salt['pillar.get']('jenkins')
+)
+%}

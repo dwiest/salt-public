@@ -1,0 +1,9 @@
+{% set hashicorp = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+    },
+    'Debian': {
+    },
+  }
+)
+%}

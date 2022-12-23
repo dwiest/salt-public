@@ -1,0 +1,14 @@
+{% set jenkins = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'gpgkey': {
+        'source': 'https://pkg.jenkins.io/redhat/jenkins.io.key'
+      },
+      'repo': {
+        'name'   : '/etc/yum.repos.d/jenkins.repo',
+        'source' : 'https://pkg.jenkins.io/redhat/jenkins.repo'
+      }
+    }
+  }, merge=salt['pillar.get']('jenkins')
+)
+%}

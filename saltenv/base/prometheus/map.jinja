@@ -1,0 +1,19 @@
+{% set prometheus = salt['grains.filter_by']({
+    'RedHat': {
+      'config' : {
+        'name' : '/etc/prometheus/prometheus.yml'
+      },
+      'defaults' : {
+        'name'  : '/etc/default/prometheus',
+        'user'  : 'root',
+        'group' : 'root',
+        'mode'  : '0644'
+      },
+      'pkg' : {
+        'name': 'prometheus2',
+      },
+      'service': {
+        'name': 'prometheus',
+      },
+    },
+}, merge=salt['pillar.get']('prometheus')) %}

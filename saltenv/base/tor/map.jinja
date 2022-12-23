@@ -1,0 +1,17 @@
+{% set tor = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'config': {
+        'name'   : '/etc/tor/torrc',
+        'source' : 'salt://tor/torrc.default',
+        'user'   : 'root',
+        'group'  : 'root',
+        'mode'   : '0644'
+      },
+      'pkg': {
+        'name': 'tor'
+      },
+    }
+  }, merge=salt['pillar.get']('tor')
+)
+%}

@@ -1,0 +1,17 @@
+{% set grafana = salt['grains.filter_by']({
+    'RedHat': {
+      'config' : {
+        'name'  : '/etc/grafana/grafana.ini',
+        'user'  : 'root',
+        'group' : 'grafana',
+        'mode'  : '0644'
+      },
+      'pkg' : {
+        'name': 'grafana',
+        'source': 'https://dl.grafana.com/oss/release/grafana-9.2.4-1.x86_64.rpm',
+      },
+      'service': {
+        'name': 'grafana',
+      },
+    },
+}, merge=salt['pillar.get']('grafana')) %}

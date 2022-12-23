@@ -1,0 +1,108 @@
+{% set cacti = salt['grains.filter_by']({
+    'RedHat': {
+      'dirs' : [
+        {
+          'name'  : '/var/log/cacti',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/cache',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/cli',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/csrf',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/resource',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/resource/snmp_queries',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/resource/script_server',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/resource/script_queries',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/rra',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/scripts',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/cache/boost',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/cache/mibcache',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/cache/realtime',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+        {
+          'name'  : '/var/lib/cacti/cache/spikekill',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+      ],
+      'user' : {
+        'name'     : 'cacti',
+        'fullname' : 'cacti',
+        'shell'    : '/sbin/nologin',
+        'homedir'  : '/usr/share/cacti',
+        'password' : None,
+      },
+      'group' : {
+        'name' : 'cacti',
+      },
+      'pkg' : {
+        'name': 'cacti',
+      },
+      'spine' : {
+        'pkg' : {
+          'name': 'cacti-spine',
+        },
+      },
+    },
+}, merge=salt['pillar.get']('cacti')) %}

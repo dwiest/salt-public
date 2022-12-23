@@ -1,0 +1,13 @@
+{% set salt_master = salt['grains.filter_by'](
+  {
+    'RedHat': {
+      'confd': {
+        'dir': {
+          'name': '/etc/salt/master.d'
+        },
+        'files': None
+      }
+    }
+  }, merge=salt['pillar.get']('salt-master')
+)
+%}

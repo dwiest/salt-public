@@ -1,0 +1,8 @@
+{% set ec2 = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'amazon-linux-extras' : []
+    }
+  }, merge=salt['pillar.get']('ec2')
+)
+%}

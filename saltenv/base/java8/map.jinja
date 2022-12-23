@@ -1,0 +1,13 @@
+{% set java8 = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'pkg': {
+        'name'    : 'java-1.8.0-openjdk.x86_64',
+        'source'  : None,
+        'repo'    : None,
+        'version' : None,
+      }
+    }
+  }, merge=salt['pillar.get']('java8')
+)
+%}

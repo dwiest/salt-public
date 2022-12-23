@@ -1,0 +1,11 @@
+{% set tor = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'repo': {
+        'name'   : '/etc/yum.repos.d/tor.repo',
+        'source' : 'salt://yum/repo/tor/tor.repo.centos'
+      }
+    }
+  }, merge=salt['pillar.get']('tor')
+)
+%}

@@ -1,0 +1,4 @@
+include:
+  - .confd
+  - .preimage
+  - .runonce

@@ -1,0 +1,99 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Salt state.sls</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>minion</name>
+          <description>Select the minion</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>btc</string>
+              <string>dante</string>
+              <string>haproxy</string>
+              <string>jenkins</string>
+              <string>libreswan</string>
+              <string>mongod</string>
+              <string>nginx2</string>
+              <string>packer</string>
+              <string>salt-master</string>
+              <string>squid</string>
+              <string>tor</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>function</name>
+          <description>Salt function</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>cmd.run</string>
+              <string>state.sls</string>
+              <string>test.ping</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>arg1</name>
+          <description>argument for cmd.run or state.sls</description>
+          <defaultValue></defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>saltenv</name>
+          <description>Select the saltenv to use.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>base</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>pillarenv</name>
+          <description>Select the pillarenv to use.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>base</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>dryrun</name>
+          <description>Perform a dry run?</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>True</string>
+              <string>False</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <quietPeriod>15</quietPeriod>
+  <assignedNode>salt</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>
+salt &quot;${minion}&quot; ${function} ${arg1} test=True
+#salt-run state.orch orchestration.&quot;${orchestration}&quot; saltenv=&quot;${saltenv}&quot; pillarenv=&quot;${pillarenv}&quot; test=&quot;${dryrun}&quot;| tee build.log
+      </command>
+      <configuredLocalRules/>
+      <unstableReturn>1</unstableReturn>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.16"/>
+  </buildWrappers>
+</project>

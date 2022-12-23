@@ -1,0 +1,3 @@
+{%- for macro in macros %}
+$USER{{loop.index}}$={{macro|string}}
+{%- endfor %}

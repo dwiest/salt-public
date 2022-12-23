@@ -1,0 +1,48 @@
+{
+  "datacenter"             : "{{config.datacenter}}",
+  "data_dir"               : "{{config.data_dir}}",
+  "log_level"              : "{{config.log_level}}",
+  "node_name"              : "{{config.node_name}}",
+  "server"                 : {%if config.server == True%}true{%else%}false{%endif%},
+  "acl_ttl"                : "{{config.acl_ttl}}",
+  "client_addr"            : "{{config.client_addr}}",
+  "advertise_addr"         : "{{config.advertise_addr}}",
+{%- if config.server == True %}
+  "bootstrap_expect"       : {{config.bootstrap_expect}},
+  "verify_incoming"        : {% if config.verify_incoming == True%}true{%else%}false{%endif%},
+  "verify_outgoing"        : {% if config.verify_outgoing == True%}true{%else%}false{%endif%},
+  "verify_server_hostname" : {% if config.verify_server_hostname == True%}true{%else%}false{%endif%},
+{%- else %}
+  "verify_outgoing"       : {% if config.verify_outgoing == True%}true{%else%}false{%endif%},
+  "verify_server_hostname" : {% if config.verify_server_hostname == True%}true{%else%}false{%endif%},
+{%- endif %}
+{%- if config.encrypt != 'None' %}
+  "encrypt"                : "{{config.encrypt}}",
+{%- endif %}
+{%- if config.ca_file != 'None' %}
+  "ca_file"                : "{{config.ca_file}}",
+{%- endif %}
+{%- if config.cert_file != 'None' %}
+  "cert_file"              : "{{config.cert_file}}",
+{%- endif %}
+{%- if config.key_file != 'None' %}
+  "key_file"               : "{{config.key_file}}",
+{%- endif %}
+  "start_join"             : {{config.start_join}},
+  "disable_remote_exec"    : {%if config.disable_remote_exec == True%}true{%else%}false{%endif%},
+  "leave_on_terminate"     : {%if config.leave_on_terminate == True%}true{%else%}false{%endif%},
+  "ports" : {
+    "dns"      : {{config.ports.dns}},
+    "http"     : {{config.ports.http}},
+    "https"    : {{config.ports.https}},
+    "serf_lan" : {{config.ports.serf_lan}},
+    "serf_wan" : {{config.ports.serf_wan}},
+    "server"   : {{config.ports.server}}
+  },
+  "watches" : [
+    {
+      "type"    : "checks",
+      "handler" : "/bin/true"
+    }
+  ]
+}

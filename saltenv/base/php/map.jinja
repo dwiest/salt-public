@@ -1,0 +1,32 @@
+{% set php = salt['grains.filter_by']({
+    'RedHat': {
+      'confd' : {
+        'dir' : {
+          'name'  : '/etc/php.d',
+          'user'  : 'root',
+          'group' : 'root',
+          'mode'  : '0755'
+        },
+        'files': [
+          {
+            'name'   : '/etc/php.d/timezone.ini',
+            'source' : 'salt://php/timezone.ini',
+            'user'   : 'root',
+            'group'  : 'root',
+            'mode'   : '0644'
+          }
+        ]
+      },
+      'config' : {
+        'name': '/etc/php.ini',
+      },
+      'dirs' : [
+        {
+          'name'  : '/var/lib/php/session',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0775'
+        },
+      ],
+    },
+}, merge=salt['pillar.get']('php')) %}

@@ -1,0 +1,23 @@
+{% set nginx = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'confd': {
+        'dir': {
+          'name': '/etc/nginx/conf.d'
+        },
+        'files': []
+      },
+      'dirs': [
+        {'name': '/etc/nginx/conf.d'}
+      ],
+      'files': [],
+      'pkg' : {
+        'name' : 'nginx',
+      },
+      'service' : {
+        'name' : 'nginx',
+      }
+    }
+  }, merge=salt['pillar.get']('nginx')
+)
+%}

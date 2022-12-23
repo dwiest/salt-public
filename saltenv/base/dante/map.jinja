@@ -1,0 +1,24 @@
+{% set dante = salt['grains.filter_by'](
+  {
+    'RedHat': {
+      'config' : {
+        'name'    : '/etc/sockd.conf',
+        'source'  : 'salt://dante/sockd.conf',
+        'user'    : 'root',
+        'group'   : 'root',
+        'mode'    : '0644'
+      },
+      'tarball' : {
+        'dir'     : '/home/ec2-user',
+        'name'    : '/home/ec2-user/tgz-highio.dante-1.4.2-rhel72-amd64-64bit-gcc.tar.gz',
+        'source'  : 'https://www.inet.no/dante/sslfiles/dante-1.4.2/tgz-highio.dante-1.4.2-rhel72-amd64-64bit-gcc.tar.gz',
+        'source_hash' : 'sha256=0087fdd190b88b2b2d64357d6b07923baf2086af3c86708ff235a868c3b7117b',
+        'user'    : 'ec2-user',
+        'group'   : 'ec2-user',
+        'mode'    : '0644',
+        'umask'   : '022'
+      }
+    }
+  }, merge=salt['pillar.get']('dante')
+)
+%}

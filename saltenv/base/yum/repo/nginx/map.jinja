@@ -1,0 +1,9 @@
+{% set nginx = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+    },
+    'Debian': {
+    },
+  }
+)
+%}

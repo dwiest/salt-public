@@ -1,0 +1,8 @@
+{% set python = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'venv': []
+    }
+  }, merge=salt['pillar.get']('python')
+)
+%}

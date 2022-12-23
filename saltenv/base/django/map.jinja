@@ -1,0 +1,8 @@
+{% set django = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'projects': []
+    }
+  }, merge=salt['pillar.get']('django')
+)
+%}

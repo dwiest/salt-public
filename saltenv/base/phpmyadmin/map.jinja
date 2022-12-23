@@ -1,0 +1,7 @@
+{% set phpmyadmin = salt['grains.filter_by']({
+    'RedHat': {
+      'pkg' : {
+        'name': 'phpMyAdmin',
+      }
+    },
+}, merge=salt['pillar.get']('phpmyadmin')) %}

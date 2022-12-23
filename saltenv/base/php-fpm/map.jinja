@@ -1,0 +1,24 @@
+{% set php_fpm = salt['grains.filter_by']({
+    'RedHat': {
+      'service' : 'php-fpm',
+      'config' : {
+        'name'   : '/etc/php-fpm.conf',
+        'source' : None,
+      },
+      'dirs' : [
+        {
+          'name'  : '/var/lib/php/session',
+          'user'  : 'root',
+          'group' : 'nginx',
+          'mode'  : '0755'
+        },
+      ],
+      'pool_config'        : '/etc/php-fpm.d/www.conf',
+      'pool_config_source' : 'salt://php-fpm/www.conf',
+      'pkg' : {
+        'name' : 'php-fpm',
+        'repo' : None,
+        'version' : None,
+      },
+    },
+}, merge=salt['pillar.get']('php-fpm')) %}

@@ -1,0 +1,82 @@
+#!/bin/sh -e
+# ==========================================================
+#  consul - Starts the consul application
+# ==========================================================
+#
+# :Usage: /etc/init.d/consul {status|start|stop|bootstrap}
+#
+
+# Based on the script at:
+# http://werxltd.com/wp/2012/01/05/simple-init-d-script-template/
+
+
+### BEGIN INIT INFO
+# Provides:          consul
+# Required-Start:    $network $local_fs $remote_fs
+# Required-Stop:     $network $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: consul service-discovery and health checker
+### END INIT INFO
+
+echo "Starting $NAME..."
+
+NAME="consul"
+DESC="Hashicorp's consul application"
+PIDFILE=/opt/consul/$NAME.pid
+CONFDIR='/opt/consul/config'
+DAEMON='/opt/consul/bin/consul'
+DAEMONOPTS="agent -config-dir=${CONFDIR}"
+LOGFILE='/var/log/consul/consul.log'
+
+case "$1" in
+bootstrap)
+    echo "--- BOOTSTRAP MODE ---"
+    DAEMONOPTS="${DAEMONOPTS} -bootstrap" 
+;&
+start)
+    echo "Starting $NAME..."
+    PID=`su consul -c "$DAEMON $DAEMONOPTS" >> $LOGFILE 2>&1 & echo $!`
+    echo "Saving PID" $PID " to " $PIDFILE
+        if [ -z $PID ]; then
+            printf "%s\n" "Fail"
+            exit 1
+        else
+            echo $PID > $PIDFILE
+            printf "%s\n" "Ok"
+            exit 0
+        fi
+;;
+status)
+    echo "Checking status on $NAME..."
+    if [ -f $PIDFILE ]; then
+        PID=`cat $PIDFILE`
+        if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
+            printf "%s\n" "Process dead but pidfile exists"
+        else
+            echo "Running"
+            exit 0
+        fi
+        else
+            printf "%s\n" "Service not running"
+            exit 1
+        fi
+;;
+stop)
+        echo "Killing $NAME..."
+        PID=`cat $PIDFILE`
+        if [ -f $PIDFILE ]; then
+            kill $PID
+            printf "%s\n" "Ok"
+            rm -f $PIDFILE
+            exit 0
+        else
+            printf "%s\n" "pidfile not found"
+            exit 1
+        fi
+;;
+
+*)
+        echo "Usage: $0 {status|start|stop|bootstrap}"
+        exit 1
+esac

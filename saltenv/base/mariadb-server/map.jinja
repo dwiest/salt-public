@@ -1,0 +1,10 @@
+{% set mariadb_server = salt['grains.filter_by']({
+    'RedHat': {
+      'pkg' : {
+        'name': 'mariadb-server',
+      },
+      'service' : {
+        'name': 'mariadb',
+      },
+    },
+}, merge=salt['pillar.get']('mariadb_server')) %}

@@ -1,0 +1,158 @@
+{% set nagios = salt['grains.filter_by']({
+    'RedHat': {
+      'user'  : 'nagios',
+      'group' : 'nagios',
+      'dirs': [
+        {
+          'name'     : '/etc/nagios/conf.d',
+          'user'     : 'nagios',
+          'group'    : 'nagios',
+          'mode'     : '0750',
+          'makedirs' : True
+        },
+        {
+          'name'  : '/var/log/nagios',
+          'user'  : 'nagios',
+          'group' : 'nagios',
+          'mode'  : '0755'
+        }
+      ],
+      'pkg' : {
+        'name'        : 'nagios',
+        'repo'        : None,
+        'version'     : None,
+        'source'      : 'https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz',
+        'source_hash' : 'md5=f7ff56cbfa3c57e2337aa53f84737564',
+        'spec'        : 'salt://nagios/rpm/nagios-4.4.5.spec',
+        'RPMS'        : [
+           'nagios-4.4.5-2.amzn1.x86_64.rpm',
+           'nagios-debuginfo-4.4.5-2.amzn1.x86_64.rpm',
+           'nagios-contrib-4.4.5-2.amzn1.x86_64.rpm',
+           'nagios-devel-4.4.5-2.amzn1.x86_64.rpm'
+        ],
+        'SRPMS' : [
+           'nagios-4.4.5-2.amzn1.src.rpm'
+        ],
+        'depends' : [
+           'gd-devel',
+           'zlib-devel',
+           'libpng-devel',
+           'libjpeg-turbo-devel',
+           'doxygen',
+           'gperf'
+        ],
+      },
+      'service': {
+        'name'   : 'nagios',
+      },
+      'plugin_states': [
+        'ncpa.client',
+        'monitoring-plugins'
+      ],
+      'command': [],
+      'config': {
+        'name'   : '/etc/nagios/nagios.cfg',
+        'source' : 'salt://nagios/etc/nagios/nagios.cfg.jinja',
+        'user'   : 'nagios',
+        'group'  : 'nagios',
+        'mode'   : '0644'
+      },
+      'objects': [
+        {
+          'name'  : '/etc/nagios/objects/contacts.cfg',
+          'user'  : 'nagios',
+          'group' : 'nagios',
+          'mode'  : '0644'
+        },
+        {
+          'name'  : '/etc/nagios/objects/localhost.cfg',
+          'user'  : 'nagios',
+          'group' : 'nagios',
+          'mode'  : '0644'
+        },
+        {
+          'name'  : '/etc/nagios/objects/templates.cfg',
+          'user'  : 'nagios',
+          'group' : 'nagios',
+          'mode'  : '0644'
+        },
+      ],
+      'resource_config': {
+        'name'   : '/etc/nagios/resource.cfg',
+        'source' : 'salt://nagios/etc/nagios/resource.cfg.jinja',
+        'user'   : 'nagios',
+        'group'  : 'nagios',
+        'mode'   : '0644',
+        'macros' : ['/usr/local/libexec']
+      },
+      'htpasswd': {
+        'name'   : '/etc/nagios/htpasswd.users',
+        'source' : None,
+        'user'   : 'nagios',
+        'group'  : 'nagios',
+        'mode'   : '0664'
+      },
+      'httpd': {
+        'config': {
+          'name'   : '/etc/httpd/conf.d/nagios.conf',
+          'source' : None,
+          'user'   : 'apache',
+          'group'  : 'apache',
+          'mode'   : 0640
+        },
+      },
+      'nginx': {
+        'config': {
+          'name'   : '/etc/nginx/conf.d/nagios.nginx.conf',
+          'source' : 'salt://nagios/etc/nginx/conf.d/nagios.nginx.conf'
+        },
+      },
+      'config_inc_php': {
+        'name'   : '/usr/share/nagios/config.inc.php',
+        'source' : 'salt://nagios/config.inc.php',
+        'user'   : 'nagios',
+        'group'  : 'nagios',
+        'mode'   : '0644'
+      },
+      'plugins': {
+        'check_static': {
+          'name'   : '/usr/local/libexec/check_static.sh',
+          'source' : None,
+          'user'   : 'root',
+          'group'  : 'root',
+          'mode'   : '0755'
+        },
+      },
+      'ssl': {
+        'enabled': True,
+        'certificate': {
+          'name': '/etc/pki/tls/certs/server.crt',
+        },
+        'key': {
+          'name': '/etc/pki/tls/private/server.key',
+        },
+        'client_certificate': {
+          'name': '/etc/pki/tls/certs/ca.crt',
+        },
+        'verify_client': False,
+      },
+      'crontab' : {
+        'name'   : '/etc/cron.weekly/nagios.cron',
+        'source' : 'salt://nagios/etc/cron.weekly/nagios.cron',
+        'user'   : 'root',
+        'group'  : 'root',
+        'mode'   : '0755'
+      },
+      'web_root'             : '/usr/share/nagios',
+      'cgi_dir'              : '/usr/lib64/nagios/cgi',
+      'cmd_dir'              : '/var/nagios/rw',
+      'status_file'          : '/var/nagios/status.dat',
+      'state_retention_file' : '/var/nagios/retention.dat',
+      'confd': {
+        'dir' : {
+          'name' : '/etc/nagios/conf.d'
+        },
+        'files': []
+      },
+    },
+}, merge=salt['pillar.get']('nagios')) %}

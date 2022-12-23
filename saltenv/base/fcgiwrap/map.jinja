@@ -1,0 +1,10 @@
+{% set fcgiwrap = salt['grains.filter_by']({
+    'RedHat': {
+      'pkg' : {
+        'name': 'fcgiwrap',
+      },
+      'service': {
+        'name' : 'fcgiwrap@nginx.socket'
+      }
+    },
+}, merge=salt['pillar.get']('fcgiwrap')) %}

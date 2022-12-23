@@ -1,0 +1,12 @@
+{% set packer = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'pkg': {
+        'name'        : '/tmp/packer_1.6.1_linux_amd64.zip',
+        'source'      : 'https://releases.hashicorp.com/packer/1.6.1/packer_1.6.1_linux_amd64.zip',
+        'source_hash' : '8dcf97610e8c3907c23e25201dce20b498e1939e89878dec01de6975733c7729'
+      }
+    }
+  }, merge=salt['pillar.get']('packer')
+)
+%}

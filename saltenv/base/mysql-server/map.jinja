@@ -1,0 +1,38 @@
+{% set mysql = salt['grains.filter_by']({
+    'RedHat': {
+      'pkg'           : {
+        'name'    : 'mysql-community-server',
+        'repo'    : 'mysql57-community',
+        'version' : None,
+        'source'  : 'https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.17.tar.gz',
+        'source_hash'  : 'md5=db2a87ede6132b226f8d43d3ac349284',
+      },
+      'svc'           : 'mysqld',
+      'config' : {
+        'name'                        : '/etc/my.cnf',
+        'source'                      : 'salt://mysql-server/my.cnf.5.7',
+        'max_connections'             : '151',
+        'max_heap_table_size'         : '16M',
+        'max_allowed_packet'          : '16M',
+        'tmp_table_size'              : '64M',
+        'join_buffer_size'            : '64M',
+        'innodb_file_per_table'       : 'ON',
+        'innodb_buffer_pool_size'     : '128M',
+        'innodb_doublewrite'          : 'OFF',
+        'innodb_lock_wait_timeout'    : '50',
+        'innodb_flush_log_at_timeout' : '3',
+        'innodb_read_io_threads'      : '32',
+        'innodb_write_io_threads'     : '16',
+      },
+      'mylogin' : {
+        'name'   : '/root/.mylogin.cnf',
+        'source' : None,
+        'user'   : 'root',
+        'group'  : 'root',
+        'mode'   : '0600',
+      },
+      'repo'          : 'mysql57-community',
+      'repo_source'   : 'https://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm',
+      'source_hash'   : 'md5=63eb7275f5473a7383c6e929e7ebfb96',
+    },
+}, merge=salt['pillar.get']('mysql')) %}

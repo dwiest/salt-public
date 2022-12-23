@@ -1,0 +1,18 @@
+{% set btc_core = salt['grains.filter_by'](
+  {
+    'RedHat': {
+      'tarball' : {
+        'dir'     : '/home/ec2-user',
+        'name'    : '/home/ec2-user/bitcoin-22.0-x86_64-linux-gnu.tar.gz',
+        'source'  : 'https://bitcoin.org/bin/bitcoin-core-22.0/bitcoin-22.0-x86_64-linux-gnu.tar.gz',
+        'pgp_key' : 'https://bitcoin.org/laanwj-releases.asc',
+        'sigfile' : 'https://bitcoin.org/bin/bitcoin-core-22.0/SHA256SUMS.asc',
+        'user'    : 'ec2-user',
+        'group'   : 'ec2-user',
+        'mode'    : '0644',
+        'umask'   : '022'
+      }
+    }
+  }, merge=salt['pillar.get']('btc-core')
+)
+%}

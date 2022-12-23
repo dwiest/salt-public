@@ -1,0 +1,7 @@
+{% set sys = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+    }
+  }, merge=salt['pillar.get']('sys')
+)
+%}

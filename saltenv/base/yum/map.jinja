@@ -1,0 +1,10 @@
+{% set yum = salt['grains.filter_by'](
+  {
+    'RedHat': {
+      'yum': {
+        'packages': []
+      }
+    }
+  }, merge=salt['pillar.get']('yum')
+)
+%}

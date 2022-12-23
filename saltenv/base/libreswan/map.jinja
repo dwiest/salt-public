@@ -1,0 +1,19 @@
+{% set libreswan = salt['grains.filter_by'] (
+  {
+    'RedHat': {
+      'confd': {
+        'dir': {
+          'name': '/etc/ipsec.d'
+        },
+        'files': None
+      },
+      'pkg': {
+        'name'    : 'libreswan',
+        'source'  : None,
+        'repo'    : None,
+        'version' : None,
+      }
+    }
+  }, merge=salt['pillar.get']('libreswan')
+)
+%}

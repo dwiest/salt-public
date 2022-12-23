@@ -1,0 +1,113 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Django collectstatic</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.29">
+      <autoRebuild>true</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>saltenv</name>
+          <description>Select the saltenv to use.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>base</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>pillarenv</name>
+          <description>Select the pillarenv to use.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>base</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>test</name>
+          <description>salt-run test=true</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>django_collectstatic</name>
+          <description>Run Django collectstatic</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>delete_old_content</name>
+          <description>aws s3 sync --delete</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>sync_dryrun</name>
+          <description>aws s3 sync --dryrun</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>quiet</name>
+          <description>aws s3 sync --quiet</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>S3_bucket</name>
+          <description>static content S3 bucket name</description>
+          <defaultValue>website-public</defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>S3_prefix</name>
+          <description>static content bucket prefix</description>
+          <defaultValue>live/static-content</defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+
+  <scm class="hudson.scm.NullSCM"/>
+  <quietPeriod>5</quietPeriod>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+env
+salt-run state.orch orchestration.collectstatic saltenv="$saltenv" pillarenv="$pillarenv" pillar="{'_options':{'django_collectstatic':$django_collectstatic,'static':{'s3':{'bucket':'$S3_bucket','prefix':'$S3_prefix','sync':{'dry_run':$sync_dryrun,'delete':$delete_old_content,'quiet':$quiet}}}}}" test="$test" | tee build.log
+</command>
+      <unstableReturn>1</unstableReturn>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <com.opsgenie.integration.jenkins.OpsGenieNotifier plugin="opsgenie@1.8">
+      <enable>true</enable>
+      <tags></tags>
+      <notifyBuildStart>false</notifyBuildStart>
+      <apiKey></apiKey>
+      <apiUrl></apiUrl>
+      <teams></teams>
+      <alertPriority>P3</alertPriority>
+      <notifyBuildStartPriority>P3</notifyBuildStartPriority>
+    </com.opsgenie.integration.jenkins.OpsGenieNotifier>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.10"/>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.5.2">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@1.6.9">
+      <template>#staging-collectstatic-${BUILD_NUMBER}</template>
+      <runAtStart>true</runAtStart>
+      <runAtEnd>true</runAtEnd>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

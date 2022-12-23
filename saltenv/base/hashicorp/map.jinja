@@ -1,0 +1,56 @@
+{% set hashicorp = salt['grains.filter_by']({
+    'RedHat': {
+      'pgp' : {
+        'pubkey' : {
+          'source' : 'salt://hashicorp/pgp.pubkey',
+        },
+      },
+      'consul' : {
+        'version': '1.13.3',
+        'bindir' : '/opt/consul/bin',
+        'tmpdir' : '/tmp',
+        'sha256'  : {
+          'source' : 'https://releases.hashicorp.com/consul/1.13.3/consul_1.13.3_SHA256SUMS',
+        },
+        'agent' : {
+          'source' : 'https://releases.hashicorp.com/consul/1.13.3/consul_1.13.3_linux_amd64.zip',
+        },
+        'config' : {
+          'dir'                    : '/opt/consul/config',
+          'name'                   : 'consul.config.json',
+          'source'                 : 'salt://hashicorp/consul/consul.config.json',
+          'datacenter'             : 'dc1',
+          'data_dir'               : '/opt/consul/data',
+          'encrypt'                : None,
+          'log_level'              : 'INFO',
+          'node_name'              : 'node1',
+          'server'                 : true,
+          'acl_ttl'                : '30s',
+          'client_addr'            : '127.0.0.1',
+          'advertise_addr'         : 'None',
+          'bootstrap_expect'       : 1,
+          'start_join'             : '["127.0.0.1"]',
+          'disable_remote_exec'    : true,
+          'leave_on_terminate'     : false,
+          'ca_file'                : None,
+          'cert_file'              : None,
+          'key_file'               : None,
+          'verify_incoming'        : false,
+          'verify_outgoing'        : false,
+          'verify_server_hostname' : false,
+          'ports' : {
+            'dns'      : 8600, 
+            'http'     : 8500,
+            'https'    : -1,
+            'serf_lan' : 8301,
+            'serf_wan' : 8302,
+            'server'   : 8300,
+          },
+        },
+        'iptables' : {
+          'enabled' : True,
+          'allow'   : ['127.0.0.1']
+        },
+      },
+    },
+}, merge=salt['pillar.get']('hashicorp')) %}

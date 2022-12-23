@@ -1,0 +1,79 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Automated AMI Creation using packer.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.29">
+      <autoRebuild>true</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>server</name>
+          <description>Select server type to build.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>btc-core</string>
+              <string>cacti</string>
+              <string>consul</string>
+              <string>dante</string>
+              <string>django</string>
+              <string>geth</string>
+              <string>grafana</string>
+              <string>haproxy</string>
+              <string>jenkins</string>
+              <string>kubernetes</string>
+              <string>libreswan</string>
+              <string>mariadb</string>
+              <string>mongod</string>
+              <string>nagios</string>
+              <string>Next.js</string>
+              <string>nginx</string>
+              <string>packer</string>
+              <string>prometheus</string>
+              <string>rabbitmq</string>
+              <string>salt-master</string>
+              <string>salt-minion</string>
+              <string>squid</string>
+              <string>tor</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <quietPeriod>5</quietPeriod>
+  <assignedNode>packer</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>
+cd /srv/salt/saltenv/base/packer/build
+packer build -var build=${BUILD_NUMBER} -var minion_config="minion.config.${server}" -var ami_name="${server}" . | tee build.log
+#../bin/packer build -var build=${BUILD_NUMBER} --var-file=./variables/${server}-variables.json -machine-readable ./application.json | tee build.log
+#aws ec2 modify-image-attribute --image-id `grep &apos;artifact,0,id&apos; build.log | cut -d, -f6 | cut -d: -f2` --launch-permission &quot;Add=[{UserId=332913860749}]&quot;
+</command>
+      <unstableReturn>1</unstableReturn>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.10"/>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.5.2">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@1.6.9">
+      <template>#staging-${server}-${BUILD_NUMBER}</template>
+      <runAtStart>true</runAtStart>
+      <runAtEnd>true</runAtEnd>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

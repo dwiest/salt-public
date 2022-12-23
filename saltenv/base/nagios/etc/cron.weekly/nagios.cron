@@ -1,0 +1,13 @@
+#!/bin/sh
+
+########################################################################
+### This script removes archived Nagios log files that are greater than 
+### 91 days old and compresses the remaining files
+########################################################################
+
+ARCHIVE_DIR='/var/log/nagios/archives'
+MAX_DAYS=91
+
+/bin/find ${ARCHIVE_DIR} -type f -mtime +${MAX_DAYS} -exec /bin/rm -f {} \;
+/bin/find ${ARCHIVE_DIR} -type f -not -name "*.gz" -exec /bin/gzip {} \;
+exit 0

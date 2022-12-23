@@ -1,0 +1,94 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Salt Orchestration</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.29">
+      <autoRebuild>true</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>orchestration</name>
+          <description>Select the orchestration to run.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>collectstatic</string>
+              <string>release</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>saltenv</name>
+          <description>Select the saltenv to use.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>base</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>pillarenv</name>
+          <description>Select the pillarenv to use.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>base</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>dryrun</name>
+          <description>Perform a dry run?</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>True</string>
+              <string>False</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <quietPeriod>5</quietPeriod>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>
+echo true
+#salt-run state.orch orchestration."${orchestration}" saltenv="${saltenv}" pillarenv="${pillarenv}" test="${dryrun}"| tee build.log
+      </command>
+      <unstableReturn>1</unstableReturn>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <com.opsgenie.integration.jenkins.OpsGenieNotifier plugin="opsgenie@1.8">
+      <enable>false</enable>
+      <tags></tags>
+      <notifyBuildStart>false</notifyBuildStart>
+      <apiKey></apiKey>
+      <apiUrl></apiUrl>
+      <teams></teams>
+      <alertPriority>P3</alertPriority>
+      <notifyBuildStartPriority>P3</notifyBuildStartPriority>
+    </com.opsgenie.integration.jenkins.OpsGenieNotifier>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.10"/>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.5.2">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@1.6.9">
+      <template>#salt-orchestration-${BUILD_NUMBER}</template>
+      <runAtStart>true</runAtStart>
+      <runAtEnd>true</runAtEnd>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

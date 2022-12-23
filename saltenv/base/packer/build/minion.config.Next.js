@@ -1,0 +1,21 @@
+#master: 127.0.0.1
+log_file: /var/log/salt/minion
+
+file_roots:
+  base:
+    - /srv/salt-public/saltenv/base
+
+pillar_roots:
+  base:
+    - /srv/salt-public/pillarenv/base
+
+publisher_acl:
+  ec2-user:
+    - salt.call
+    - state.sls
+    - test.ping
+
+merge_lists: true
+
+grains:
+  type: Next.js

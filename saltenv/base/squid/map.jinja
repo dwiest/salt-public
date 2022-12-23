@@ -1,0 +1,15 @@
+{% set squid = salt['grains.filter_by'](
+  {
+    'RedHat': {
+      'config': {
+        'source': 'salt://squid/squid.conf'
+      },
+      'pkg': {
+        'name': 'squid',
+        'repo': {
+        }
+      },
+    }
+  }, merge=salt['pillar.get']('squid')
+)
+%}
